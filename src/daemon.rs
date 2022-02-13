@@ -302,7 +302,6 @@ fn get_filepath(filename: &str) -> Result<String, Error> {
 pub fn set_tag(tag: Option<String>) -> Result<(), Error> {
     let tag_filepath = get_filepath("tag")?;
 
-    println!("howdy");
     match tag {
         Some(v) => {
             write(tag_filepath, v).expect("Error writing to tag file");

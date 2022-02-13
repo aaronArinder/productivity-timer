@@ -23,7 +23,6 @@ fn main() {
             Arg::with_name("trigger")
                 .short("r")
                 .long("record")
-                .takes_value(true)
                 .help("Begins or ends recording a duration of time.")
         )
         .arg(
@@ -128,7 +127,7 @@ fn main() {
     }
 
     if tagging {
-        let tag = matches.value_of("tagging").unwrap().to_string();
+        let tag = matches.value_of("tag").unwrap().to_string();
         daemon::set_tag(Some(tag.to_string())).unwrap();
     }
 
