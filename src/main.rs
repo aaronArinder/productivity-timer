@@ -21,10 +21,17 @@ fn main() {
         )
         .arg(
             Arg::with_name("trigger")
-                .short("t")
-                .long("trigger")
+                .short("r")
+                .long("record")
                 .takes_value(true)
-                .help("Records a moment in time, either the beginning or end of a duration.")
+                .help("Begins or ends recording a duration of time.")
+        )
+        .arg(
+            Arg::with_name("tag")
+                .short("t")
+                .long("tag")
+                .takes_value(true)
+                .help("Tags the duration being recorded.")
         )
         .arg(
             Arg::with_name("print")
@@ -83,6 +90,7 @@ fn main() {
         .get_matches();
 
     let triggering = matches.is_present("trigger");
+    let tagging = matches.is_present("tag");
     let daemonizing = matches.is_present("daemonize");
     let printing = matches.is_present("print");
     let interface = matches.is_present("interface");
@@ -107,7 +115,6 @@ fn main() {
         println!("{:?}", time_gained);
     }
 
-    // TODO: support tags
     if adding_minutes {
         // handle regex in supporting fn
         let minutes_to_add = matches.value_of("add").unwrap().to_string();
@@ -120,15 +127,13 @@ fn main() {
         daemon::subtract_minutes(minutes_to_subtract).unwrap();
     }
 
+    if tagging {
+        let tag = matches.value_of("tagging").unwrap().to_string();
+        daemon::set_tag(Some(tag.to_string())).unwrap();
+    }
+
     if triggering {
-        match matches.value_of("trigger") {
-            Some(tag) => {
-                daemon::trigger_time(Some(tag.to_string())).unwrap();
-            }
-            None => {
-                daemon::trigger_time(None).unwrap();
-            }
-        }
+        daemon::trigger_time().unwrap();
     }
 
     if tag_time {

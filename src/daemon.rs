@@ -14,6 +14,9 @@ pub fn init() {
         home_dir().unwrap().as_path().display().to_string() + "/.productivity-timer";
     let pid_filepath = get_filepath("timer.pid").unwrap();
     let (tmp_file_out, tmp_file_err) = create_files().unwrap();
+    // TODO find a better place for this; need to make sure tags file is wiped on
+    // daemon init in case of crash/etc
+    reset_tag().unwrap();
 
     let daemonize = Daemonize::new()
         .pid_file(pid_filepath)
@@ -37,6 +40,7 @@ fn listen_for_durations() {
 
         let input = read_from_in_file().unwrap();
         match input.trim() {
+            // TODO remove, never used
             "e" => exit(0),
             "c" => {
                 let tag = get_tag().unwrap();
@@ -60,7 +64,6 @@ fn listen_for_durations() {
                         }
                     }
                 }
-                reset_tag().unwrap();
             }
             // TODO: deprecate, doublecheck unused
             "p" => {
@@ -296,11 +299,10 @@ fn get_filepath(filename: &str) -> Result<String, Error> {
     }
 }
 
-pub fn trigger_time(tag: Option<String>) -> Result<(), Error> {
-    let filepath = get_filepath("in")?;
+pub fn set_tag(tag: Option<String>) -> Result<(), Error> {
     let tag_filepath = get_filepath("tag")?;
-    write(filepath, "t")?;
 
+    println!("howdy");
     match tag {
         Some(v) => {
             write(tag_filepath, v).expect("Error writing to tag file");
@@ -308,6 +310,13 @@ pub fn trigger_time(tag: Option<String>) -> Result<(), Error> {
         }
         None => Ok(()),
     }
+}
+
+pub fn trigger_time() -> Result<(), Error> {
+    let filepath = get_filepath("in")?;
+    let tag_filepath = get_filepath("tag")?;
+    write(filepath, "t")?;
+    Ok(())
 }
 
 pub fn get_time_gained() -> Result<String, Error> {
