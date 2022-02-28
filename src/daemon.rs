@@ -311,7 +311,7 @@ pub fn set_tag(tag: Option<String>) -> Result<(), Error> {
     }
 }
 
-pub fn trigger_time() -> Result<(), Error> {
+pub fn record_time() -> Result<(), Error> {
     let filepath = get_filepath("in")?;
     let tag_filepath = get_filepath("tag")?;
     write(filepath, "t")?;

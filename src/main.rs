@@ -20,7 +20,7 @@ fn main() {
                 .help("Initializes the daemon, which is used for recording durations and interacting with the host system asynchronously to the CLI.")
         )
         .arg(
-            Arg::with_name("trigger")
+            Arg::with_name("record")
                 .short("r")
                 .long("record")
                 .help("Begins or ends recording a duration of time.")
@@ -88,7 +88,7 @@ fn main() {
         )
         .get_matches();
 
-    let triggering = matches.is_present("trigger");
+    let recording = matches.is_present("record");
     let tagging = matches.is_present("tag");
     let daemonizing = matches.is_present("daemonize");
     let printing = matches.is_present("print");
@@ -131,8 +131,8 @@ fn main() {
         daemon::set_tag(Some(tag.to_string())).unwrap();
     }
 
-    if triggering {
-        daemon::trigger_time().unwrap();
+    if recording {
+        daemon::record_time().unwrap();
     }
 
     if tag_time {
